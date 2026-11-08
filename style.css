@@ -1,0 +1,246 @@
+:root {
+  --green: #1b873b;
+  --dark-green: #0d5a27;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* header, main, footer */
+  gap: 5px;
+  padding: 5px;
+  background-color: var(--dark-green); /* shows through the gaps as the dark border */
+  color: var(--white);
+  font-family: Arial, sans-serif;
+}
+
+header,
+main,
+footer {
+  background-color: var(--green);
+}
+
+/* Hidden on screen, but screen readers still read it */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Header ---------- */
+header {
+  padding: 10px 20px;
+}
+
+h1 {
+  margin: 0;
+  text-align: right;
+  font-family: "Fascinate", sans-serif;
+  font-size: 2.5rem;
+  font-weight: normal;
+}
+
+header :focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+}
+
+/* ---------- Hamburger menu ---------- */
+.nav {
+  position: relative;
+  min-height: 44px;
+}
+
+.menu-button {
+  position: absolute;
+  top: 0;
+  left: calc(100% - 44px); /* closed: on the right */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: left 0.5s ease-in-out; /* this makes it slide */
+}
+
+.nav.open .menu-button {
+  left: 0; /* open: on the left */
+}
+
+/* The three white bars */
+.menu-button span {
+  display: block;
+  width: 36px;
+  height: 5px;
+  margin: 4px auto;
+  border-radius: 3px;
+  background-color: var(--white);
+}
+
+.nav-links {
+  display: none; /* hidden until the menu is open */
+  justify-content: flex-end;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav.open .nav-links {
+  display: flex;
+  animation: slide-in 0.5s ease-out;
+}
+
+.nav-links a {
+  display: block;
+  padding: 10px 0;
+  line-height: 24px;
+  color: var(--white);
+  font-family: "Fascinate", sans-serif;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+/* Underline the current page and links you hover over */
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  text-decoration: underline;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ---------- Main and footer ---------- */
+main {
+  padding: 20px;
+}
+
+footer {
+  padding: 20px;
+  text-align: center;
+  font-family: "Fascinate", sans-serif;
+  font-size: 1.1rem;
+}
+
+footer p {
+  margin: 0;
+}
+
+/* ---------- Contact and thanks pages ---------- */
+.card {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px 25px;
+  border-radius: 10px;
+  background-color: var(--white);
+  color: #222222;
+}
+
+.card h2 {
+  margin-top: 0;
+  color: var(--dark-green);
+  font-family: "Fascinate", sans-serif;
+  font-size: 2rem;
+  font-weight: normal;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  padding: 10px;
+  border: 2px solid #777777;
+  border-radius: 5px;
+  font: inherit;
+}
+
+/* Error message under each field */
+.error {
+  margin-top: 4px;
+  color: #b3261e;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Red border on fields with a problem */
+.invalid {
+  border-color: #b3261e;
+}
+
+.welcome {
+  padding: 10px;
+  border-left: 5px solid var(--green);
+  background-color: #e8f5ec;
+}
+
+form .button {
+  margin-top: 20px;
+}
+
+.button {
+  align-self: flex-start;
+  display: inline-block;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--dark-green);
+  color: var(--white);
+  font-family: "Fascinate", sans-serif;
+  font-size: 1.2rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #08401b;
+}
+
+/* ---------- Small screens ---------- */
+/* The links don't fit next to the button, so they drop down in a column */
+@media (max-width: 480px) {
+  .nav.open .nav-links {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    padding-top: 44px; /* start below the button */
+  }
+}
+
+/* No sliding for people who turn on "reduce motion" in their settings */
+@media (prefers-reduced-motion: reduce) {
+  .menu-button {
+    transition: none;
+  }
+
+  .nav.open .nav-links {
+    animation: none;
+  }
+}
