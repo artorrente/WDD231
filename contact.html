@@ -1,66 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Contact The Game" />
-    <title>Contact | The Game</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fascinate&display=swap" />
-    <link rel="stylesheet" href="css/style.css" />
-    <script type="module" src="js/contact.js"></script>
-  </head>
-  <body>
-    <header>
-      <h1>The Game</h1>
-      <nav class="nav" id="nav">
-        <button class="menu-button" id="menu-button" aria-label="Menu" aria-expanded="false">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="play.html">play Game</a></li>
-          <li><a href="contact.html" aria-current="page">contact</a></li>
-        </ul>
-      </nav>
-    </header>
+import { qs, getLocalStorage, setLocalStorage } from "./utils.js";
+import { setupMenu } from "./menu.js";
 
-    <main>
-      <div class="card">
-        <h2>contact</h2>
-        <p>Found a bug or have an idea? Send me a message!</p>
-        <p id="welcome" class="welcome" hidden></p>
+setupMenu();
 
-        <!-- method="get" sends the answers to thanks.html in the URL.
-             novalidate turns off the browser's pop-ups so contact.js can show its own messages. -->
-        <form id="contact-form" action="thanks.html" method="get" novalidate>
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" required aria-describedby="name-error" />
-          <span id="name-error" class="error"></span>
+const form = qs("#contact-form");
 
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required aria-describedby="email-error" />
-          <span id="email-error" class="error"></span>
+async function loadTopics() {
+  try {
+    const response = await fetch("data/topics.json");
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.status}`);
+    }
+    const topics = await response.json();
 
-          <label for="topic">Topic</label>
-          <select id="topic" name="topic" required aria-describedby="topic-error">
-            <option value="">Choose a topic</option>
-            <!-- The other options are loaded from data/topics.json -->
-          </select>
-          <span id="topic-error" class="error"></span>
+    const options = topics.map((topic) => `<option value="${topic}">${topic}</option>`);
+    qs("#topic").insertAdjacentHTML("beforeend", options.join(""));
+  } catch (error) {
+    console.error("Could not load topics:", error);
+  }
+}
 
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required aria-describedby="message-error"></textarea>
-          <span id="message-error" class="error"></span>
+function loadSavedInfo() {
+  const saved = getLocalStorage("contactInfo");
 
-          <button type="submit" class="button">Send</button>
-        </form>
-      </div>
-    </main>
+  if (saved) {
+    form.elements.name.value = saved.name;
+    form.elements.email.value = saved.email;
 
-    <footer>
-      <p>copyright Alexander Torrente 2026</p>
-    </footer>
-  </body>
-</html>
+    const welcome = qs("#welcome");
+    welcome.textContent = `Welcome back, ${saved.name}! Your name and email are filled in.`;
+    welcome.hidden = false;
+  }
+}
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const validators = {
+  name: (value) => (value.length < 2 ? "Please enter your name." : ""),
+  email: (value) => (emailPattern.test(value) ? "" : "Please enter a valid email, like name@example.com."),
+  topic: (value) => (value === "" ? "Please choose a topic." : ""),
+  message: (value) => (value.length < 10 ? "Your message needs at least 10 characters." : ""),
+};
+
+function showError(input, message) {
+  qs(`#${input.id}-error`).textContent = message;
+  input.classList.toggle("invalid", message !== "");
+  input.setAttribute("aria-invalid", message !== "");
+}
+
+function validateField(input) {
+  const message = validators[input.name](input.value.trim());
+  showError(input, message);
+  return message === "";
+}
+
+function validateForm() {
+  let isValid = true;
+
+  for (const name of Object.keys(validators)) {
+    if (!validateField(form.elements[name])) {
+      isValid = false;
+    }
+  }
+  return isValid;
+}
+
+form.addEventListener("submit", (event) => {
+  if (!validateForm()) {
+    event.preventDefault();
+    qs(".invalid", form).focus();
+    return;
+  }
+
+  setLocalStorage("contactInfo", {
+    name: form.elements.name.value.trim(),
+    email: form.elements.email.value.trim(),
+  });
+});
+
+form.addEventListener("input", (event) => {
+  if (event.target.classList.contains("invalid")) {
+    validateField(event.target);
+  }
+});
+
+loadTopics();
+loadSavedInfo();
