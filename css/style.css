@@ -1,4 +1,3 @@
-/* Colors used on every page */
 :root {
   --green: #1b873b;
   --dark-green: #0d5a27;
@@ -13,10 +12,10 @@ body {
   margin: 0;
   min-height: 100vh;
   display: grid;
-  grid-template-rows: auto 1fr auto; /* header, main, footer */
+  grid-template-rows: auto 1fr auto;
   gap: 5px;
   padding: 5px;
-  background-color: var(--dark-green); /* shows through the gaps as the dark border */
+  background-color: var(--dark-green);
   color: var(--white);
   font-family: Arial, sans-serif;
 }
@@ -27,7 +26,6 @@ footer {
   background-color: var(--green);
 }
 
-/* Hidden on screen, but screen readers still read it */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -37,7 +35,6 @@ footer {
   white-space: nowrap;
 }
 
-/* ---------- Header ---------- */
 header {
   padding: 10px 20px;
 }
@@ -55,7 +52,6 @@ header :focus-visible {
   outline-offset: 3px;
 }
 
-/* ---------- Hamburger menu ---------- */
 .nav {
   position: relative;
   min-height: 44px;
@@ -64,21 +60,20 @@ header :focus-visible {
 .menu-button {
   position: absolute;
   top: 0;
-  left: calc(100% - 44px); /* closed: on the right */
+  left: calc(100% - 44px);
   width: 44px;
   height: 44px;
   padding: 0;
   border: none;
   background: none;
   cursor: pointer;
-  transition: left 0.5s ease-in-out; /* this makes it slide */
+  transition: left 0.5s ease-in-out;
 }
 
 .nav.open .menu-button {
-  left: 0; /* open: on the left */
+  left: 0;
 }
 
-/* The three white bars */
 .menu-button span {
   display: block;
   width: 36px;
@@ -89,7 +84,7 @@ header :focus-visible {
 }
 
 .nav-links {
-  display: none; /* hidden until the menu is open */
+  display: none;
   justify-content: flex-end;
   gap: 30px;
   margin: 0;
@@ -112,7 +107,6 @@ header :focus-visible {
   text-decoration: none;
 }
 
-/* Underline the current page and links you hover over */
 .nav-links a:hover,
 .nav-links a[aria-current="page"] {
   text-decoration: underline;
@@ -129,7 +123,6 @@ header :focus-visible {
   }
 }
 
-/* ---------- Main and footer ---------- */
 main {
   padding: 20px;
 }
@@ -145,7 +138,6 @@ footer p {
   margin: 0;
 }
 
-/* ---------- Contact and thanks pages ---------- */
 .card {
   max-width: 600px;
   margin: 0 auto;
@@ -183,7 +175,6 @@ textarea {
   font: inherit;
 }
 
-/* Error message under each field */
 .error {
   margin-top: 4px;
   color: #b3261e;
@@ -191,7 +182,6 @@ textarea {
   font-weight: bold;
 }
 
-/* Red border on fields with a problem */
 .invalid {
   border-color: #b3261e;
 }
@@ -224,18 +214,15 @@ form .button {
   background-color: #08401b;
 }
 
-/* ---------- Small screens ---------- */
-/* The links don't fit next to the button, so they drop down in a column */
 @media (max-width: 480px) {
   .nav.open .nav-links {
     flex-direction: column;
     align-items: flex-end;
     gap: 0;
-    padding-top: 44px; /* start below the button */
+    padding-top: 44px;
   }
 }
 
-/* No sliding for people who turn on "reduce motion" in their settings */
 @media (prefers-reduced-motion: reduce) {
   .menu-button {
     transition: none;
